@@ -22,8 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Author：liupeng on 2016/12/27 15:41
- * Address：liupeng264@pingan.com.cn
+ * Author：liupeng on 2017/08/27 15:41
+ * Address：liupeng502@pingan.com.cn
  * 使用软引用 关联
  */
 public class ImageAdapter3 extends ArrayAdapter<String> {

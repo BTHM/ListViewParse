@@ -1,8 +1,8 @@
 package com.pingan.listviewdemo;
 
 /**
- * Author：liupeng on 2016/12/27 15:25
- * Address：liupeng264@pingan.com.cn
+ * Author：liupeng on 2017/08/27 15:25
+ * Address：liupeng502@pingan.com.cn
  */
 public class Images {
     public final static String[] imageUrls = new String[] {

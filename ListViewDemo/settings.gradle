@@ -1,1 +1,1 @@
-include ':app', ':valueanimatordemo'
+include ':app', ':valueanimatordemo', ':listviewbar'

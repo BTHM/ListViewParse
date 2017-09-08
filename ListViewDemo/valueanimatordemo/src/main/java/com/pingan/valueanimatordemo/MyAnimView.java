@@ -10,8 +10,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Author：liupeng on 2016/12/27 21:21
- * Address：liupeng264@pingan.com.cn
+ * Description
+ * @author  liupeng502
+ * @data    2017/9/7
  */
 public class MyAnimView extends View {
 
