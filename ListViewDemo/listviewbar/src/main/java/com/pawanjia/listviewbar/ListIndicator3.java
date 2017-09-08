@@ -16,7 +16,7 @@ import android.view.View;
  * @data 2017/9/7
  */
 
-public class ListIndicator2 extends View {
+public class ListIndicator3 extends View {
 
     private Paint mPaint;
     private String[] text = {"概况", "病因", "临床表现", "检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
@@ -30,17 +30,17 @@ public class ListIndicator2 extends View {
     private int textX;
     private int maxPosition;
     private float downX;
-    private int textAreaWidth;
+    private float totaldiffY;
 
-    public ListIndicator2(Context context) {
+    public ListIndicator3(Context context) {
         this(context, null);
     }
 
-    public ListIndicator2(Context context, @Nullable AttributeSet attrs) {
+    public ListIndicator3(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ListIndicator2(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ListIndicator3(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         textSize = ToolUtils.sp2px(getContext(), 14);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -52,18 +52,13 @@ public class ListIndicator2 extends View {
         maxPosition = text.length - 1;
     }
 
-    public int getTextAreaWidth() {
-        return textAreaWidth;
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         measuredWidth = getMeasuredWidth();
         measuredHeight = getMeasuredHeight();
         // sectionHeight = measuredHeight / text.length;
-        textAreaWidth = measuredWidth - ToolUtils.dip2px(getContext(), 19);
-        textX = ToolUtils.dip2px(getContext(), 19) + textAreaWidth / 2;
+        textX = ToolUtils.dip2px(getContext(), 19) + (measuredWidth - ToolUtils.dip2px(getContext(), 19)) / 2;
     }
 
     @Override
@@ -106,15 +101,22 @@ public class ListIndicator2 extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 float moveY = event.getY();
-                int movePosition = (int) (moveY / sectionHeight);
-                if (maxPosition <= movePosition) {
-                    movePosition = maxPosition;
+                float moveX = event.getX();
+                float diffY = moveY - downY;
+                float diffX = moveX - downX;
+                totaldiffY +=diffY;
+                if (Math.abs(diffX) < Math.abs(diffY)) {
+                    int movePosition = (int) (moveY / sectionHeight);
+                    if (maxPosition <= movePosition) {
+                        movePosition = maxPosition;
+                    }
+                    selectedPosition = movePosition;
+                    Log.d("tag", "position=" + movePosition);
+                    if (mTouchListner != null) {
+                        mTouchListner.onTouch(movePosition);
+                    }
                 }
-                selectedPosition = movePosition;
-                Log.d("tag", "position=" + movePosition);
-                if (mTouchListner != null) {
-                    mTouchListner.onTouch(movePosition);
-                }
+
                 break;
             case MotionEvent.ACTION_UP:
                 break;
