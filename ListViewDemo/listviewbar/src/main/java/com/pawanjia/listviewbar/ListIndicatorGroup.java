@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class ListIndicatorGroup extends FrameLayout {
     private ObjectAnimator animatorIn;
     private ObjectAnimator animatorOut;
     private int            textAreaWidth;
+    private Scroller mScroller;
 
     public ListIndicatorGroup(Context context) {
         this(context, null);
@@ -181,7 +183,15 @@ public class ListIndicatorGroup extends FrameLayout {
                 // }
                 break;
             case MotionEvent.ACTION_UP:
-                
+                mScroller = new Scroller(getContext());
+                if (totalDx <= textAreaWidth/2) {
+                    //展开
+                    mScroller.startScroll(Math.round(totalDx),0,Math.round(-totalDx),0,Math.round(totalDx));
+                }else{
+                    //收缩
+                    mScroller.startScroll(Math.round(totalDx),0,Math.round(totalDx),0,Math.round(totalDx));
+                }
+
                 break;
             default:
         }
@@ -193,6 +203,13 @@ public class ListIndicatorGroup extends FrameLayout {
     @Override
     public void computeScroll() {
         super.computeScroll();
+        if (!mScroller.computeScrollOffset()) {
+            return;
+        }
+        int currX = mScroller.getCurrX();
+        scrollTo(currX,0);
+        Log.d("tag", "currX=" + currX);
+        rl.setTranslationX(currX);
     }
 
     class MyAdapter extends BaseAdapter {
