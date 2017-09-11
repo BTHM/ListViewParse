@@ -100,7 +100,6 @@ public class ListIndicatorGroup2 extends FrameLayout {
                     animatorOut.start();
                     mIsClose=true;
                 }
-
             }
         });
     }

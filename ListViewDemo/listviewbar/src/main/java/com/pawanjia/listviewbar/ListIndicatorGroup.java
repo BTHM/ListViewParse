@@ -1,5 +1,6 @@
 package com.pawanjia.listviewbar;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -32,16 +34,20 @@ import java.util.List;
 public class ListIndicatorGroup extends FrameLayout {
 
 
+    private boolean        mIsClose;
     private RelativeLayout rl;
-    private ViewGroup mLayout;
-    private ListView lv;
+    private ViewGroup      mLayout;
+    private ListView       lv;
     private ListIndicator2 indicator;
-    private FrameLayout frame;
-    private ImageView iv;
-    private float downX;
-    private float downY;
+    private FrameLayout    frame;
+    private ImageView      iv;
+    private float          downX;
+    private float          downY;
     private List<String> datas = new ArrayList<>();
-    private float totalDy;
+    private float          totalDx;
+    private ObjectAnimator animatorIn;
+    private ObjectAnimator animatorOut;
+    private int            textAreaWidth;
 
     public ListIndicatorGroup(Context context) {
         this(context, null);
@@ -76,14 +82,22 @@ public class ListIndicatorGroup extends FrameLayout {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.d("tag", "firstVisibleItem=" + firstVisibleItem);
+                Log.d("tag", "firstVisibleItem=" + firstVisibleItem + "rl.getLeft()=" + rl.getLeft());
                 //TODO 设置第一个可见行会导致指示器 最后几个下不去  已解决
                 if (firstVisibleItem + visibleItemCount < totalItemCount) {
                     indicator.setSelectedPosition(firstVisibleItem);
                 }
             }
         });
-
+        indicator.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                indicator.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                textAreaWidth = indicator.getTextAreaWidth();
+                Log.d("tag", "textAreaWidth=" + textAreaWidth);
+                loadAnim(textAreaWidth);
+            }
+        });
         indicator.setOnTouchListner(new ListIndicator2.OnTouchListner() {
             @Override
             public void onTouch(int position) {
@@ -91,10 +105,33 @@ public class ListIndicatorGroup extends FrameLayout {
                 lv.setSelection(position);
             }
         });
-
+        mIsClose = false;
+        frame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsClose) {
+                    animatorIn.start();
+                    mIsClose = false;
+                } else {
+                    animatorOut.start();
+                    mIsClose = true;
+                }
+            }
+        });
 
     }
 
+    public void loadAnim(int textAreaWidth) {
+        //from、to位置是指targat的本身
+        animatorOut = ObjectAnimator.ofFloat(rl, "translationX", 0, textAreaWidth);
+        animatorOut.setDuration(500);
+
+        //to位置是指target 起始和终点位置就是上面位置相反的
+        animatorIn = ObjectAnimator.ofFloat(rl, "translationX", textAreaWidth, 0);
+        animatorIn.setDuration(500);
+
+        // ObjectAnimator.ofFloat(iv,"")
+    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -109,23 +146,47 @@ public class ListIndicatorGroup extends FrameLayout {
                 float moveY = ev.getY();
                 Log.d("tag", "moveX=" + moveX + "moveY=" + moveY);
                 if (Math.abs(moveY - downY) < Math.abs(moveX - downX)) {
-                    Log.d("tag", "moveX=" + moveX);
-                    float dy = moveY - downY;
-                    totalDy += dy;
-
                     return true;
                 }
                 break;
             default:
         }
+        //return true;
         return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //viewDragHelper.processTouchEvent(event);
-        //return true;
-        return super.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                float moveX = event.getX();
+                float moveY = event.getY();
+                Log.d("tag", "moveX=" + moveX + "moveY=" + moveY);
+                //if (Math.abs(moveY - downY) < Math.abs(moveX - downX)) {
+                float dx = moveX - downX;
+                totalDx += dx;
+                if (totalDx <= 0) {
+                    totalDx = 0;
+                }
+                if (totalDx >= textAreaWidth) {
+                    totalDx = textAreaWidth;
+                }
+                Log.d("tag", "totalDx=" + totalDx + "dx=" + dx);
+                rl.setTranslationX(totalDx);
+                downX = moveX;
+                Log.d("tag", "totalDx=" + totalDx);
+                rl.setTranslationX(totalDx);
+                downX = moveX;
+                //return true;
+                // }
+                break;
+            case MotionEvent.ACTION_UP:
+                
+                break;
+            default:
+        }
+        return true;
+        //return super.onTouchEvent(event);
     }
 
 
