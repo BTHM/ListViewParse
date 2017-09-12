@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     tools:context="com.pawanjia.listviewbar.Main2Activity">
 
-    <com.pawanjia.listviewbar.ListIndicatorGroup
+    <com.pawanjia.listviewbar.ListIndicatorGroup4
         android:id="@+id/group2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.pawanjia.listviewbar.ListIndicatorGroup>
+    </com.pawanjia.listviewbar.ListIndicatorGroup4>
     <!--<com.pawanjia.listviewbar.ViewDragLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"></com.pawanjia.listviewbar.ViewDragLayout>-->
