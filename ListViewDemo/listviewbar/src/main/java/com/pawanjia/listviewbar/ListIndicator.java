@@ -19,29 +19,41 @@ import android.view.View;
 public class ListIndicator extends View {
 
     private Paint mPaint;
-    private String[] text={"概况","病因","检查","检查","临床","表现","解决办法","注意"};
+    private String[] textArray = {"概况", "病因", "临床表现", "检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
     private int measuredWidth;
     private int sectionHeight;
     private int measuredHeight;
     private float downY;
     private OnTouchListner mTouchListner;
-    private int selectedPosition=0;
+    private int selectedPosition = 0;
+    private int textSize;
+    private int textX;
+    private int maxPosition;
+    private float downX;
+    private int textAreaWidth;
 
     public ListIndicator(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public ListIndicator(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public ListIndicator(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
+        textSize = ToolUtils.sp2px(getContext(), 14);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(getResources().getColor(R.color.color_353535));
-        mPaint.setTextSize(60);
+        mPaint.setTextSize(textSize);
         mPaint.setTextAlign(Paint.Align.CENTER);
+
+        sectionHeight = ToolUtils.dip2px(context, 48);
+        maxPosition = textArray.length - 1;
+    }
+
+    public int getTextAreaWidth() {
+        return textAreaWidth;
     }
 
     @Override
@@ -49,7 +61,9 @@ public class ListIndicator extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         measuredWidth = getMeasuredWidth();
         measuredHeight = getMeasuredHeight();
-        sectionHeight = measuredHeight / text.length;
+        // sectionHeight = measuredHeight / text.length;
+        textAreaWidth = measuredWidth - ToolUtils.dip2px(getContext(), 26);
+        textX = ToolUtils.dip2px(getContext(), 19) + textAreaWidth / 2;
     }
 
     @Override
@@ -58,61 +72,81 @@ public class ListIndicator extends View {
         Paint.FontMetricsInt fm = mPaint.getFontMetricsInt();
         int ascent = fm.ascent;
 
-        for (int i = 0; i < text.length; i++) {
-            canvas.drawLine(0,sectionHeight*i,measuredWidth,sectionHeight*i,mPaint);
-            //int textY = sectionHeight / 2 + i * sectionHeight - ascent/2;
-            int textY = (sectionHeight -ascent) / 2 + i * sectionHeight;
+        for (int i = 0; i < textArray.length; i++) {
+            //int y = sectionHeight / 2 + i * sectionHeight - ascent / 2;
+            int y = (sectionHeight -ascent) / 2 + i * sectionHeight;
             if (selectedPosition == i) {
                 mPaint.setColor(getResources().getColor(R.color.color_ff6602));
-            }else{
+            } else {
                 mPaint.setColor(getResources().getColor(R.color.color_353535));
             }
-            canvas.drawText(text[i],measuredWidth/2,textY,mPaint);
+            canvas.drawText(textArray[i], textX, y, mPaint);
 
         }
-        canvas.drawLine(0,measuredHeight,measuredWidth,measuredHeight,mPaint);
     }
 
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        switch(event.getAction()){
+
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downY = event.getY();
+                downX = event.getX();
                 int position = (int) (downY / sectionHeight);
+
+                if (maxPosition <= position) {
+                    position = maxPosition;
+                }
                 selectedPosition = position;
-                Log.d("tag", "position="+position);
+                Log.d("tag", "position=" + position);
                 if (mTouchListner != null) {
                     mTouchListner.onTouch(position);
                 }
-                break;
+                invalidate();
+                return true;
+            // break;
             case MotionEvent.ACTION_MOVE:
                 float moveY = event.getY();
-                int movePosition = (int) (moveY / sectionHeight);
-                selectedPosition=movePosition;
-                Log.d("tag", "position="+movePosition);
-                if (mTouchListner != null) {
-                    mTouchListner.onTouch(movePosition);
+                float moveX = event.getX();
+                if (Math.abs(moveY - downY) > Math.abs(moveX - downX)) {
+                    int movePosition = (int) (moveY / sectionHeight);
+                    if (maxPosition <= movePosition) {
+                        movePosition = maxPosition;
+                    }
+                    selectedPosition = movePosition;
+                    Log.d("tag", "movePosition=" + movePosition);
+                    if (mTouchListner != null) {
+                        mTouchListner.onTouch(movePosition);
+                    }
+                    downY = moveY;
+                    downX = moveX;
+                    invalidate();
+                    return true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-
                 break;
             default:
         }
-        invalidate();
-        return true;
+        return super.dispatchTouchEvent(event);
     }
 
-    public void setSelectedPosition(int position){
-        selectedPosition=position;
+    public void setSelectedPosition(int position) {
+        selectedPosition = position;
         invalidate();
     }
 
-    interface OnTouchListner{
+    interface OnTouchListner {
         void onTouch(int position);
+        //void scrollX();
     }
-    public void setOnTouchListner(OnTouchListner touchListner){
+
+    public void setOnTouchListner(OnTouchListner touchListner) {
         mTouchListner = touchListner;
+    }
+
+    public void setIndicatorText(String[] textArray) {
+        this.textArray = textArray;
     }
 }

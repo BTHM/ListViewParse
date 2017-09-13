@@ -31,13 +31,15 @@ public class ListIndicatorGroup2 extends FrameLayout {
     private RelativeLayout rl;
     private ViewGroup mLayout;
     private ListView lv;
-    private ListIndicator2 indicator;
+    private ListIndicator indicator;
     private FrameLayout frame;
     private ImageView iv;
 
 
     private ObjectAnimator animatorIn;
     private  ObjectAnimator animatorOut;
+    private ObjectAnimator animatorLeft;
+    private ObjectAnimator animatorRight;
 
     public ListIndicatorGroup2(Context context) {
         this(context, null);
@@ -53,7 +55,7 @@ public class ListIndicatorGroup2 extends FrameLayout {
         mLayout = (ViewGroup) layoutInflater.inflate(R.layout.activity_viewgroup, this, true);
         rl = (RelativeLayout) mLayout.findViewById(R.id.indicator_rl);
         lv = (ListView) mLayout.findViewById(R.id.indicator_lv);
-        indicator = (ListIndicator2) mLayout.findViewById(R.id.indicator_list);
+        indicator = (ListIndicator) mLayout.findViewById(R.id.indicator_list);
         frame = (FrameLayout) mLayout.findViewById(R.id.indicator_frame);
         iv = (ImageView) mLayout.findViewById(R.id.indicator_iv);
 
@@ -72,7 +74,7 @@ public class ListIndicatorGroup2 extends FrameLayout {
             }
         });
 
-        indicator.setOnTouchListner(new ListIndicator2.OnTouchListner() {
+        indicator.setOnTouchListner(new ListIndicator.OnTouchListner() {
             @Override
             public void onTouch(int position) {
                 Log.d("tag","position="+position);
@@ -95,9 +97,11 @@ public class ListIndicatorGroup2 extends FrameLayout {
             public void onClick(View v) {
                 if (mIsClose) {
                     animatorIn.start();
+                    animatorRight.start();
                     mIsClose=false;
                 }else{
                     animatorOut.start();
+                    animatorLeft.start();
                     mIsClose=true;
                 }
             }
@@ -113,7 +117,12 @@ public class ListIndicatorGroup2 extends FrameLayout {
         animatorIn = ObjectAnimator.ofFloat(rl, "translationX", textAreaWidth,0);
         animatorIn.setDuration(500);
 
-       // ObjectAnimator.ofFloat(iv,"")
+        animatorLeft = ObjectAnimator.ofFloat(iv, "rotation", 0,180);
+        animatorLeft.setDuration(500);
+
+        animatorRight = ObjectAnimator.ofFloat(iv, "rotation", 180,0);
+        animatorRight.setDuration(500);
+
     }
 
 

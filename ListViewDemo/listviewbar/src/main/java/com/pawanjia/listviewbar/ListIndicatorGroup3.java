@@ -32,7 +32,7 @@ import java.util.List;
  * @data 2017/9/8
  */
 
-public class ListIndicatorGroup extends FrameLayout {
+public class ListIndicatorGroup3 extends FrameLayout {
 
 
     private boolean        mIsClose;
@@ -51,15 +51,15 @@ public class ListIndicatorGroup extends FrameLayout {
     private int            textAreaWidth;
     private Scroller mScroller;
 
-    public ListIndicatorGroup(Context context) {
+    public ListIndicatorGroup3(Context context) {
         this(context, null);
     }
 
-    public ListIndicatorGroup(Context context, AttributeSet attrs) {
+    public ListIndicatorGroup3(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ListIndicatorGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ListIndicatorGroup3(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         mLayout = (ViewGroup) layoutInflater.inflate(R.layout.activity_viewgroup, this, true);
@@ -105,7 +105,7 @@ public class ListIndicatorGroup extends FrameLayout {
             }
         });
         mIsClose = false;
-        frame.setOnClickListener(new View.OnClickListener() {
+        frame.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIsClose) {
@@ -189,6 +189,12 @@ public class ListIndicatorGroup extends FrameLayout {
         return super.onTouchEvent(event);
     }
 
+
+    // 从FloatEvaluator中拷贝过来,这样就不用每次都new FloatEvaluator了
+    public static Float evaluate(float fraction, Number startValue, Number endValue) {
+        float startFloat = startValue.floatValue();
+        return startFloat + fraction * (endValue.floatValue() - startFloat);
+    }
 
     @Override
     public void computeScroll() {

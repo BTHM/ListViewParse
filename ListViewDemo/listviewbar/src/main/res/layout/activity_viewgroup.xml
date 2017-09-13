@@ -19,7 +19,7 @@
         android:layout_alignParentRight="true"
         >
 
-        <com.pawanjia.listviewbar.ListIndicator2
+        <com.pawanjia.listviewbar.ListIndicator
             android:id="@+id/indicator_list"
             android:layout_width="132dp"
             android:layout_height="match_parent"

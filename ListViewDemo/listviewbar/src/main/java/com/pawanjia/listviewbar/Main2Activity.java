@@ -41,7 +41,7 @@ public class Main2Activity extends AppCompatActivity {
         datas.add("5");
         datas.add("6");
         setContentView(R.layout.activity_main2);
-        /*ListIndicatorGroup2 indicatorGroup2 = (ListIndicatorGroup2) findViewById(R.id.group2);
+       /* ListIndicatorGroup2 indicatorGroup2 = (ListIndicatorGroup2) findViewById(R.id.group2);
         indicatorGroup2.setAdapter(new MyAdapter());*/
     }
 
