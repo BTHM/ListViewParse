@@ -31,7 +31,7 @@ public class ListIndicatorGroup2 extends FrameLayout {
     private RelativeLayout rl;
     private ViewGroup mLayout;
     private ListView lv;
-    private ListIndicator indicator;
+    private IndicatorList indicator;
     private FrameLayout frame;
     private ImageView iv;
 
@@ -52,10 +52,10 @@ public class ListIndicatorGroup2 extends FrameLayout {
     public ListIndicatorGroup2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        mLayout = (ViewGroup) layoutInflater.inflate(R.layout.activity_viewgroup, this, true);
+        mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_list_group, this, true);
         rl = (RelativeLayout) mLayout.findViewById(R.id.indicator_rl);
         lv = (ListView) mLayout.findViewById(R.id.indicator_lv);
-        indicator = (ListIndicator) mLayout.findViewById(R.id.indicator_list);
+        indicator = (IndicatorList) mLayout.findViewById(R.id.indicator_list);
         frame = (FrameLayout) mLayout.findViewById(R.id.indicator_frame);
         iv = (ImageView) mLayout.findViewById(R.id.indicator_iv);
 
@@ -74,7 +74,7 @@ public class ListIndicatorGroup2 extends FrameLayout {
             }
         });
 
-        indicator.setOnTouchListner(new ListIndicator.OnTouchListner() {
+        indicator.setOnTouchListner(new IndicatorList.OnTouchListner() {
             @Override
             public void onTouch(int position) {
                 Log.d("tag","position="+position);

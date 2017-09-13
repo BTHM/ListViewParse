@@ -27,6 +27,8 @@ import java.util.List;
 
 public class Main2Activity extends AppCompatActivity {
     private List<String> datas =new ArrayList<>();
+     private String[] textArray  = {"概况", "病因", "临床表现"};//"检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +43,10 @@ public class Main2Activity extends AppCompatActivity {
         datas.add("5");
         datas.add("6");
         setContentView(R.layout.activity_main2);
-       /* ListIndicatorGroup2 indicatorGroup2 = (ListIndicatorGroup2) findViewById(R.id.group2);
-        indicatorGroup2.setAdapter(new MyAdapter());*/
+        IndicatorListGroup indicatorGroup2 = (IndicatorListGroup) findViewById(R.id.group6);
+        indicatorGroup2.setIndicatorText(textArray);
+        indicatorGroup2.setAdapter(new MyAdapter());
+
     }
 
 

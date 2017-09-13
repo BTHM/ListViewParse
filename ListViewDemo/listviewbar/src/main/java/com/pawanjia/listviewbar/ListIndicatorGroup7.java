@@ -32,14 +32,14 @@ import java.util.List;
  * @data 2017/9/8
  */
 
-public class ListIndicatorGroup extends FrameLayout {
+public class ListIndicatorGroup7 extends FrameLayout {
 
 
     private boolean        mIsClose;
     private RelativeLayout rl;
     private ViewGroup      mLayout;
     private ListView       lv;
-    private ListIndicator indicator;
+    private IndicatorList indicator;
     private FrameLayout    frame;
     private ImageView      iv;
     private float          downX;
@@ -51,21 +51,21 @@ public class ListIndicatorGroup extends FrameLayout {
     private int            textAreaWidth;
     private Scroller mScroller;
 
-    public ListIndicatorGroup(Context context) {
+    public ListIndicatorGroup7(Context context) {
         this(context, null);
     }
 
-    public ListIndicatorGroup(Context context, AttributeSet attrs) {
+    public ListIndicatorGroup7(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ListIndicatorGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ListIndicatorGroup7(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        mLayout = (ViewGroup) layoutInflater.inflate(R.layout.activity_viewgroup, this, true);
+        mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_list_group, this, true);
         rl = (RelativeLayout) mLayout.findViewById(R.id.indicator_rl);
         lv = (ListView) mLayout.findViewById(R.id.indicator_lv);
-        indicator = (ListIndicator) mLayout.findViewById(R.id.indicator_list);
+        indicator = (IndicatorList) mLayout.findViewById(R.id.indicator_list);
         frame = (FrameLayout) mLayout.findViewById(R.id.indicator_frame);
         iv = (ImageView) mLayout.findViewById(R.id.indicator_iv);
         mScroller = new Scroller(getContext());
@@ -98,7 +98,7 @@ public class ListIndicatorGroup extends FrameLayout {
                 loadAnim(textAreaWidth);
             }
         });
-        indicator.setOnTouchListner(new ListIndicator.OnTouchListner() {
+        indicator.setOnTouchListner(new IndicatorList.OnTouchListner() {
             @Override
             public void onTouch(int position) {
                 lv.setSelection(position);

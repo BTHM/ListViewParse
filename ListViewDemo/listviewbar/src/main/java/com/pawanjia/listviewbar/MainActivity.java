@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<String> datas=new ArrayList<>();
     private ListView mLv;
-    private ListIndicator mIndicator;
+    private IndicatorList mIndicator;
     private RelativeLayout rl;
     private ImageView iv;
     private boolean mIsClose;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         datas.add("5");
         datas.add("6");
         mLv = (ListView) findViewById(R.id.lv);
-        mIndicator = (ListIndicator) findViewById(R.id.list);
+        mIndicator = (IndicatorList) findViewById(R.id.list);
         rl = (RelativeLayout) findViewById(R.id.rl);
         iv = (ImageView) findViewById(R.id.iv);
         frame = (FrameLayout) findViewById(R.id.frame);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mIndicator.setOnTouchListner(new ListIndicator.OnTouchListner() {
+        mIndicator.setOnTouchListner(new IndicatorList.OnTouchListner() {
             @Override
             public void onTouch(int position) {
                 mLv.setSelection(position);

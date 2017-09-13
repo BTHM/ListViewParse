@@ -5,21 +5,21 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * Description
+ * Description  带指示的list
  *
  * @author liupeng502
  * @data 2017/9/7
  */
 
-public class ListIndicator extends View {
+public class IndicatorList extends View {
 
     private Paint mPaint;
-    private String[] textArray = {"概况", "病因", "临床表现", "检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
+   // private String[] textArray = {"概况", "病因", "临床表现", "检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
+   private String[] textArray;
     private int measuredWidth;
     private int sectionHeight;
     private int measuredHeight;
@@ -32,15 +32,15 @@ public class ListIndicator extends View {
     private float downX;
     private int textAreaWidth;
 
-    public ListIndicator(Context context) {
+    public IndicatorList(Context context) {
         this(context, null);
     }
 
-    public ListIndicator(Context context, @Nullable AttributeSet attrs) {
+    public IndicatorList(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ListIndicator(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public IndicatorList(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         textSize = ToolUtils.sp2px(getContext(), 14);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -49,7 +49,7 @@ public class ListIndicator extends View {
         mPaint.setTextAlign(Paint.Align.CENTER);
 
         sectionHeight = ToolUtils.dip2px(context, 48);
-        maxPosition = textArray.length - 1;
+
     }
 
     public int getTextAreaWidth() {
@@ -71,7 +71,9 @@ public class ListIndicator extends View {
         super.onDraw(canvas);
         Paint.FontMetricsInt fm = mPaint.getFontMetricsInt();
         int ascent = fm.ascent;
-
+        if (textArray == null || textArray.length<=0) {
+            return;
+        }
         for (int i = 0; i < textArray.length; i++) {
             //int y = sectionHeight / 2 + i * sectionHeight - ascent / 2;
             int y = (sectionHeight -ascent) / 2 + i * sectionHeight;
@@ -81,14 +83,12 @@ public class ListIndicator extends View {
                 mPaint.setColor(getResources().getColor(R.color.color_353535));
             }
             canvas.drawText(textArray[i], textX, y, mPaint);
-
         }
     }
 
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downY = event.getY();
@@ -99,13 +99,12 @@ public class ListIndicator extends View {
                     position = maxPosition;
                 }
                 selectedPosition = position;
-                Log.d("tag", "position=" + position);
+                WJLog.d("tag", "position=" + position);
                 if (mTouchListner != null) {
                     mTouchListner.onTouch(position);
                 }
                 invalidate();
-                return true;
-            // break;
+               return true;
             case MotionEvent.ACTION_MOVE:
                 float moveY = event.getY();
                 float moveX = event.getX();
@@ -115,7 +114,7 @@ public class ListIndicator extends View {
                         movePosition = maxPosition;
                     }
                     selectedPosition = movePosition;
-                    Log.d("tag", "movePosition=" + movePosition);
+                    WJLog.d("tag", "movePosition=" + movePosition);
                     if (mTouchListner != null) {
                         mTouchListner.onTouch(movePosition);
                     }
@@ -139,14 +138,26 @@ public class ListIndicator extends View {
 
     interface OnTouchListner {
         void onTouch(int position);
-        //void scrollX();
     }
 
+    /**
+     * 联动外部
+     */
     public void setOnTouchListner(OnTouchListner touchListner) {
         mTouchListner = touchListner;
     }
 
+
+    /** 设置侧滑栏文本
+     * @param textArray
+     */
     public void setIndicatorText(String[] textArray) {
         this.textArray = textArray;
+        if (textArray == null || textArray.length<=0) {
+            maxPosition=0;
+        }else {
+            maxPosition = textArray.length - 1;
+        }
+        invalidate();
     }
 }
