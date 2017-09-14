@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class Main2Activity extends AppCompatActivity {
     private List<String> datas =new ArrayList<>();
-     private String[] textArray  = {"概况", "病因", "临床表现"};//"检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
+     private List<String> textArray  = new ArrayList();//{"概况", "病因", "临床表现"};//"检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,11 @@ public class Main2Activity extends AppCompatActivity {
         datas.add("4");
         datas.add("5");
         datas.add("6");
+        textArray.add("概况");
+        textArray.add("概况");
+        textArray.add("概况");
+        textArray.add("概况");
+        textArray.add("概况");
         setContentView(R.layout.activity_main2);
         IndicatorListGroup indicatorGroup2 = (IndicatorListGroup) findViewById(R.id.group6);
         indicatorGroup2.setIndicatorText(textArray);
@@ -127,6 +133,12 @@ public class Main2Activity extends AppCompatActivity {
 
             return drawable;
         }
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        return super.dispatchTouchEvent(ev);
     }
 }
+

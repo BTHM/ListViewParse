@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 
+import java.util.List;
+
 /**
  * Description  带指示侧滑组合控件
  *
@@ -68,8 +70,7 @@ public class IndicatorListGroup extends FrameLayout {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                WJLog.d("tag", "firstVisibleItem=" + firstVisibleItem + "rl.getLeft()=" + rl.getLeft());
-                //TODO 设置第一个可见行会导致指示器 最后几个下不去  已解决
+                // 设置第一个可见行会导致指示器 最后几个下不去已解决
                 if (firstVisibleItem + visibleItemCount < totalItemCount) {
                     indicator.setSelectedPosition(firstVisibleItem);
                 }
@@ -80,14 +81,12 @@ public class IndicatorListGroup extends FrameLayout {
             public void onGlobalLayout() {
                 indicator.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 textAreaWidth = indicator.getTextAreaWidth();
-                WJLog.d("tag", "textAreaWidth=" + textAreaWidth);
                 loadAnim(textAreaWidth);
             }
         });
         indicator.setOnTouchListner(new IndicatorList.OnTouchListner() {
             @Override
             public void onTouch(int position) {
-                WJLog.d("tag", "position=" + position);
                 lv.setSelection(position);
             }
         });
@@ -108,6 +107,16 @@ public class IndicatorListGroup extends FrameLayout {
         });
 
     }
+
+    /**
+     * 设置关闭导航栏
+     */
+    public void closeIndector(){
+        animatorOut.start();
+        animatorLeft.start();
+        mIsClose = true;
+    }
+
 
     public void loadAnim(int textAreaWidth) {
         //from、to位置是指targat的本身
@@ -136,7 +145,6 @@ public class IndicatorListGroup extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 float moveX = ev.getX();
                 float moveY = ev.getY();
-                WJLog.d("tag", "moveX=" + moveX + "moveY=" + moveY);
                 if (Math.abs(moveY - downY) < Math.abs(moveX - downX)) {
                     return true;
                 }
@@ -152,7 +160,6 @@ public class IndicatorListGroup extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 float moveX = event.getX();
                 float moveY = event.getY();
-                WJLog.d("tag", "moveX=" + moveX + "moveY=" + moveY);
                 float dx = moveX - downX;
                 totalDx += dx;
                 //左边界
@@ -193,7 +200,6 @@ public class IndicatorListGroup extends FrameLayout {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
             int currX = mScroller.getCurrX();
-            WJLog.d("tag", "currX=" + currX);
             rl.setTranslationX(currX);
             float percent = currX * 1.f / textAreaWidth;
             iv.setRotation(evaluate(percent, 0, 180));
@@ -209,8 +215,8 @@ public class IndicatorListGroup extends FrameLayout {
     }
 
 
-    public void setIndicatorText(String[] textArray) {
-        if (textArray == null || textArray.length<=0) {
+    public void setIndicatorText(List<String> textArray) {
+        if (textArray == null || textArray.size()<=0) {
             indicator.setVisibility(GONE);
             iv.setVisibility(GONE);
         }else{
@@ -222,8 +228,13 @@ public class IndicatorListGroup extends FrameLayout {
 
 
     public void setAdapter(BaseAdapter adapter) {
-        if (adapter != null) {
-            lv.setAdapter(adapter);
+        BaseAdapter lvAdapter = (BaseAdapter) lv.getAdapter();
+        if (lvAdapter != null) {
+            lvAdapter.notifyDataSetChanged();
+        }else{
+            if (adapter != null) {
+                lv.setAdapter(adapter);
+            }
         }
     }
 
