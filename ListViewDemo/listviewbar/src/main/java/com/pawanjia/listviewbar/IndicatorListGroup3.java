@@ -10,16 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
-import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,14 +26,13 @@ import java.util.List;
  * @data 2017/9/8
  */
 
-public class IndicatorListGroup extends FrameLayout {
-
-
+public class IndicatorListGroup3 extends FrameLayout {
+    
     private boolean mIsClose;
     private RelativeLayout rl;
     private ViewGroup mLayout;
     private ListView lv;
-    private ListView indicator;
+    private IndicatorList indicator;
     private FrameLayout frame;
     private ImageView iv;
     private float downX;
@@ -49,30 +45,27 @@ public class IndicatorListGroup extends FrameLayout {
     private ObjectAnimator animatorLeft;
     private ObjectAnimator animatorRight;
     private boolean isDrawed;
-    private int loadAnimationDuration = 500;
-    private int scrollDuration = 200;
-    private IndicatorAdapter indicatorAdapter;
-    private int indicatorSelcPosition;
-    private  List<String> textList=new ArrayList<>();
-    public IndicatorListGroup(Context context) {
+    private int loadAnimationDuration=500;
+    private int scrollDuration=200;
+
+    public IndicatorListGroup3(Context context) {
         this(context, null);
     }
 
-    public IndicatorListGroup(Context context, AttributeSet attrs) {
+    public IndicatorListGroup3(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IndicatorListGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IndicatorListGroup3(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_list_group, this, true);
         rl = (RelativeLayout) mLayout.findViewById(R.id.indicator_rl);
         lv = (ListView) mLayout.findViewById(R.id.indicator_lv);
-        indicator = (ListView) mLayout.findViewById(R.id.indicator_list);
+        indicator = (IndicatorList) mLayout.findViewById(R.id.indicator_list);
         frame = (FrameLayout) mLayout.findViewById(R.id.indicator_frame);
         iv = (ImageView) mLayout.findViewById(R.id.indicator_iv);
         mScroller = new Scroller(getContext());
-
         lv.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -80,27 +73,24 @@ public class IndicatorListGroup extends FrameLayout {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                    indicatorSelcPosition = firstVisibleItem;
-                if (indicatorAdapter != null) {
-                    indicatorAdapter.notifyDataSetChanged();
+                // 设置第一个可见行会导致指示器 最后几个下不去已解决
+                if (firstVisibleItem + visibleItemCount < totalItemCount) {
+                    indicator.setSelectedPosition(firstVisibleItem);
                 }
             }
         });
-
         indicator.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 indicator.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                isDrawed = true;
-                textAreaWidth = indicator.getWidth();
+                isDrawed=true;
+                textAreaWidth = indicator.getTextAreaWidth();
                 loadAnim(textAreaWidth);
             }
         });
-        indicator.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        indicator.setOnTouchListner(new IndicatorList.OnTouchListner() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                indicatorSelcPosition=position;
-                indicatorAdapter.notifyDataSetChanged();
+            public void onTouch(int position) {
                 lv.setSelection(position);
             }
         });
@@ -125,12 +115,12 @@ public class IndicatorListGroup extends FrameLayout {
     /**
      * 设置关闭导航栏
      */
-    public void closeIndector() {
+    public void closeIndector(){
         if (isDrawed) {//绘制完了才能关闭
             animatorOut.start();
             animatorLeft.start();
             mIsClose = true;
-            totalDx = textAreaWidth;
+            totalDx=textAreaWidth;
         }
     }
 
@@ -185,13 +175,12 @@ public class IndicatorListGroup extends FrameLayout {
                 //左边界
                 if (totalDx <= 0) {
                     totalDx = 0;
-                    mIsClose=false;
                 }
                 //右边界
                 if (totalDx >= textAreaWidth) {
                     totalDx = textAreaWidth;
-                    mIsClose=true;
                 }
+
                 float percent = totalDx * 1.f / textAreaWidth;
                 rl.setTranslationX(evaluate(percent, 0, textAreaWidth));
                 downX = moveX;
@@ -201,12 +190,10 @@ public class IndicatorListGroup extends FrameLayout {
             case MotionEvent.ACTION_UP:
                 if (totalDx <= textAreaWidth / 2) {
                     //展开 注：dx大于0往右
-                    mScroller.startScroll(Math.round(totalDx), 0, Math.round(-totalDx), 0, scrollDuration);
-                    mIsClose=false;
+                    mScroller.startScroll(Math.round(totalDx), 0, Math.round(-totalDx), 0,scrollDuration);
                 } else {
                     //收缩
                     mScroller.startScroll(Math.round(totalDx), 0, Math.round(textAreaWidth - totalDx), 0, scrollDuration);
-                    mIsClose=true;
                 }
                 invalidate();
                 break;
@@ -239,25 +226,23 @@ public class IndicatorListGroup extends FrameLayout {
     }
 
 
-    public void setIndicatorText(List<String> textList) {
-        if (textList == null || textList.size() <= 0) {
+    public void setIndicatorText(List<String> textArray) {
+        if (textArray == null || textArray.size()<=0) {
             indicator.setVisibility(GONE);
             iv.setVisibility(GONE);
-        } else {
+        }else{
             indicator.setVisibility(VISIBLE);
             iv.setVisibility(VISIBLE);
-            indicatorAdapter = new IndicatorAdapter(textList);
-            indicator.setAdapter(indicatorAdapter);
         }
+        indicator.setIndicatorText(textArray);
     }
-
 
 
     public void setAdapter(BaseAdapter adapter) {
         BaseAdapter lvAdapter = (BaseAdapter) lv.getAdapter();
         if (lvAdapter != null) {
             lvAdapter.notifyDataSetChanged();
-        } else {
+        }else{
             if (adapter != null) {
                 lv.setAdapter(adapter);
             }
@@ -284,45 +269,5 @@ public class IndicatorListGroup extends FrameLayout {
         if (animatorRight != null)
             animatorRight.end();
     }
-
-    class IndicatorAdapter extends BaseAdapter {
-
-        private ArrayList<String> mList;
-
-        public IndicatorAdapter(List<String> list) {
-            mList = (ArrayList<String>) list;
-        }
-
-        @Override
-        public int getCount() {
-            return mList!=null?mList.size() : 0;
-        }
-
-        @Override
-        public String getItem(int position) {
-            return mList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_indecetor_text, parent, false);
-            }
-            TextView textView = (TextView) convertView.findViewById(R.id.text);
-            if (position == indicatorSelcPosition) {
-                textView.setTextColor(getResources().getColor(R.color.color_ff6602));
-            }else{
-                textView.setTextColor(getResources().getColor(R.color.color_353535));
-            }
-            textView.setText(mList.get(position));
-            return convertView;
-        }
-    }
-
-
+    
 }

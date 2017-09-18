@@ -17,23 +17,20 @@
 
     <RelativeLayout
         android:id="@+id/indicator_rl"
-        android:layout_width="wrap_content"
+        android:layout_width="132dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:clipChildren="false">
+        android:background="@mipmap/slide_bar"
+        >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@mipmap/slide_bar"
-            android:orientation="vertical"
-            >
-            <com.pawanjia.listviewbar.IndicatorList
+            <ListView
                 android:id="@+id/indicator_list"
-                android:layout_width="132dp"
+                android:layout_width="106dp"
                 android:layout_height="match_parent"
-                />
-        </LinearLayout>
+                android:layout_alignParentRight="true"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:background="@color/color_ffffff"/>
 
         <FrameLayout
             android:id="@+id/indicator_frame"
