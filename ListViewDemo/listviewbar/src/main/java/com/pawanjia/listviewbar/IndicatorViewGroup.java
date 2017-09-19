@@ -26,7 +26,7 @@ import java.util.List;
  * @data 2017/9/8
  */
 
-public class IndicatorListGroup3 extends FrameLayout {
+public class IndicatorViewGroup extends FrameLayout {
     
     private boolean mIsClose;
     private RelativeLayout rl;
@@ -48,18 +48,18 @@ public class IndicatorListGroup3 extends FrameLayout {
     private int loadAnimationDuration=500;
     private int scrollDuration=200;
 
-    public IndicatorListGroup3(Context context) {
+    public IndicatorViewGroup(Context context) {
         this(context, null);
     }
 
-    public IndicatorListGroup3(Context context, AttributeSet attrs) {
+    public IndicatorViewGroup(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IndicatorListGroup3(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IndicatorViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_list_group, this, true);
+        mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_view_group, this, true);
         rl = (RelativeLayout) mLayout.findViewById(R.id.indicator_rl);
         lv = (ListView) mLayout.findViewById(R.id.indicator_lv);
         indicator = (IndicatorList) mLayout.findViewById(R.id.indicator_list);
@@ -191,9 +191,11 @@ public class IndicatorListGroup3 extends FrameLayout {
                 if (totalDx <= textAreaWidth / 2) {
                     //展开 注：dx大于0往右
                     mScroller.startScroll(Math.round(totalDx), 0, Math.round(-totalDx), 0,scrollDuration);
+                    mIsClose = false;
                 } else {
                     //收缩
                     mScroller.startScroll(Math.round(totalDx), 0, Math.round(textAreaWidth - totalDx), 0, scrollDuration);
+                    mIsClose = true;
                 }
                 invalidate();
                 break;

@@ -53,7 +53,7 @@ public class IndicatorList extends View {
         mPaint.setTextAlign(Paint.Align.CENTER);
 
         sectionHeight = ToolUtils.dip2px(context, 48);
-        arrowWidth = ToolUtils.dip2px(getContext(), 25);
+        arrowWidth = ToolUtils.dip2px(getContext(), 19);
     }
 
     public int getTextAreaWidth() {

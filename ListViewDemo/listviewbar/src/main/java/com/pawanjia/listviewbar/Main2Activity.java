@@ -50,10 +50,10 @@ public class Main2Activity extends AppCompatActivity {
         textArray.add("检查");
         textArray.add("概况");
         textArray.add("病因");
-        textArray.add("临床表现临床表现");
+       // textArray.add("临床表现临床表现");
         textArray.add("检查");
         textArray.add("概况");
-        textArray.add("临床表现临床表现临床表现");
+       // textArray.add("临床表现临床表现临床表现");
         textArray.add("概况");
 //        textArray.add("病因");
 //        textArray.add("临床表现");
@@ -63,7 +63,8 @@ public class Main2Activity extends AppCompatActivity {
 //        textArray.add("临床表现");
 //        textArray.add("检查");
         setContentView(R.layout.activity_main2);
-        IndicatorListGroup indicatorGroup2 = (IndicatorListGroup) findViewById(R.id.group6);
+        //IndicatorListGroup indicatorGroup2 = (IndicatorListGroup) findViewById(R.id.group6);
+        IndicatorViewGroup indicatorGroup2 = (IndicatorViewGroup) findViewById(R.id.group6);
         indicatorGroup2.setIndicatorText(textArray);
         mScreenWidth = ToolUtils.getScreenDpi(this);
         indicatorGroup2.setAdapter(new MyAdapter());
