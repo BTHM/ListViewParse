@@ -14,6 +14,8 @@
         <activity android:name=".MainActivity">
         </activity>
         <activity android:name=".Main2Activity">
+        </activity>
+        <activity android:name=".ListLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

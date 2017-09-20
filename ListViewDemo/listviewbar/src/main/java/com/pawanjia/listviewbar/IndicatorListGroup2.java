@@ -29,7 +29,7 @@ import java.util.List;
  * @data 2017/9/8
  */
 
-public class IndicatorListGroup extends FrameLayout {
+public class IndicatorListGroup2 extends FrameLayout {
 
 
     private boolean mIsClose;
@@ -49,20 +49,27 @@ public class IndicatorListGroup extends FrameLayout {
     private ObjectAnimator animatorLeft;
     private ObjectAnimator animatorRight;
     private boolean isDrawed;
-    private int loadAnimationDuration = 500;
+    private int loadAnimationDuration = 2000;
     private int scrollDuration = 200;
     private IndicatorAdapter indicatorAdapter;
     private int indicatorSelcPosition;
     private  List<String> textList=new ArrayList<>();
-    public IndicatorListGroup(Context context) {
+    private int mRlMeasuredWidth;
+    private int mIndiMeasuredWidth;
+    private int mDxWidth;
+    private int mRlLeft;
+    private int mRlRight;
+    private int mRlBottom;
+
+    public IndicatorListGroup2(Context context) {
         this(context, null);
     }
 
-    public IndicatorListGroup(Context context, AttributeSet attrs) {
+    public IndicatorListGroup2(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IndicatorListGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IndicatorListGroup2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_list_group, this, true);
@@ -92,8 +99,8 @@ public class IndicatorListGroup extends FrameLayout {
             public void onGlobalLayout() {
                 indicator.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 isDrawed = true;
-                textAreaWidth = indicator.getWidth();
-                loadAnim(textAreaWidth);
+                //textAreaWidth = indicator.getWidth();
+                //loadAnim(textAreaWidth);
             }
         });
         indicator.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,8 +111,8 @@ public class IndicatorListGroup extends FrameLayout {
                 lv.setSelection(position);
             }
         });
-        mIsClose = false;
-        frame.setOnClickListener(new OnClickListener() {
+        mIsClose = true;
+        /*frame.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIsClose) {
@@ -118,30 +125,34 @@ public class IndicatorListGroup extends FrameLayout {
                     mIsClose = true;
                 }
             }
+        });*/
+
+        frame.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsClose) {//展开
+                    mScroller.startScroll(Math.round(-mIndiMeasuredWidth), 0, 0, 0, 5000);
+                    invalidate();
+                    mIsClose = false;
+                } else {//关闭
+                    mScroller.startScroll(Math.round(-mIndiMeasuredWidth), 0, Math.round(mIndiMeasuredWidth), 0, loadAnimationDuration);
+                    invalidate();
+                    mIsClose = true;
+                }
+            }
         });
-
-    }
-
-    /**
-     * 设置关闭导航栏
-     */
-    public void closeIndector() {
-        if (isDrawed) {//绘制完了才能关闭
-            animatorOut.start();
-            animatorLeft.start();
-            mIsClose = true;
-            totalDx = textAreaWidth;
-        }
     }
 
 
-    public void loadAnim(int textAreaWidth) {
+
+
+    public void loadAnim(int indiMeasuredWidth) {
         //from、to位置是指targat的本身
-        animatorOut = ObjectAnimator.ofFloat(rl, "translationX", 0, textAreaWidth);
+        animatorOut = ObjectAnimator.ofFloat(rl, "translationX", 0, -indiMeasuredWidth);
         animatorOut.setDuration(loadAnimationDuration);
 
         //to位置是指target 起始和终点位置就是上面位置相反的
-        animatorIn = ObjectAnimator.ofFloat(rl, "translationX", textAreaWidth, 0);
+        animatorIn = ObjectAnimator.ofFloat(rl, "translationX", -indiMeasuredWidth, 0);
         animatorIn.setDuration(loadAnimationDuration);
 
         animatorLeft = ObjectAnimator.ofFloat(iv, "rotation", 0, 180);
@@ -149,9 +160,7 @@ public class IndicatorListGroup extends FrameLayout {
 
         animatorRight = ObjectAnimator.ofFloat(iv, "rotation", 180, 0);
         animatorRight.setDuration(loadAnimationDuration);
-        if (!mIsClose) {//如果绘制完未关闭则关闭
-           // closeIndector();
-        }
+
     }
 
     @Override
@@ -181,9 +190,24 @@ public class IndicatorListGroup extends FrameLayout {
                 float moveX = event.getX();
                 float moveY = event.getY();
                 float dx = moveX - downX;
+
+                //右移dx<0; 左移dx>0;
                 totalDx += dx;
                 //左边界
-                if (totalDx <= 0) {
+                if (totalDx <= -mIndiMeasuredWidth) {
+                    totalDx = -mIndiMeasuredWidth;
+                    mIsClose=false;
+                }
+                 //右边界
+                if (totalDx >= 0) {
+                    totalDx = 0;
+                    mIsClose=true;
+                }
+                WJLog.d("tag","dx="+dx+"totalDx="+totalDx);
+                float percent = totalDx * 1.f / -mIndiMeasuredWidth;
+                setLayout(evaluate(percent, 0, -mIndiMeasuredWidth));
+                //rl.setTranslationX(evaluate(percent, 0, -mIndiMeasuredWidth));
+               /* if (totalDx <= 0) {
                     totalDx = 0;
                     mIsClose=false;
                 }
@@ -193,20 +217,20 @@ public class IndicatorListGroup extends FrameLayout {
                     mIsClose=true;
                 }
                 float percent = totalDx * 1.f / textAreaWidth;
-                rl.setTranslationX(evaluate(percent, 0, textAreaWidth));
-                //rl.setTranslationX(totalDx);
+                //rl.setTranslationX(evaluate(percent, 0, -textAreaWidth));
                 downX = moveX;
                 //旋转箭头
-                iv.setRotation(evaluate(percent, 0, 180));
+                iv.setRotation(evaluate(percent, 0, 180));*/
+                downX = moveX;
                 break;
             case MotionEvent.ACTION_UP:
-                if (totalDx <= textAreaWidth / 2) {
+                if (totalDx <= -mIndiMeasuredWidth / 2) {
                     //展开 注：dx大于0往右
-                    mScroller.startScroll(Math.round(totalDx), 0, Math.round(-totalDx), 0, scrollDuration);
+                    mScroller.startScroll(Math.round(totalDx), 0, Math.round(-mIndiMeasuredWidth - totalDx), 0, scrollDuration);
                     mIsClose=false;
                 } else {
                     //收缩
-                    mScroller.startScroll(Math.round(totalDx), 0, Math.round(textAreaWidth - totalDx), 0, scrollDuration);
+                    mScroller.startScroll(Math.round(totalDx), 0, Math.round(-totalDx), 0, scrollDuration);
                     mIsClose=true;
                 }
                 invalidate();
@@ -225,18 +249,19 @@ public class IndicatorListGroup extends FrameLayout {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
             int currX = mScroller.getCurrX();
-            rl.setTranslationX(currX);
-            float percent = currX * 1.f / textAreaWidth;
-            iv.setRotation(evaluate(percent, 0, 180));
+            //rl.setTranslationX(currX);
+            setLayout(currX);
+            /*float percent = currX * 1.f / textAreaWidth;
+            iv.setRotation(evaluate(percent, 0, 180));*/
             postInvalidate();
         }
 
     }
 
     //避免每次创建
-    private Float evaluate(float fraction, Number startValue, Number endValue) {
+    private int evaluate(float fraction, Number startValue, Number endValue) {
         float startFloat = startValue.floatValue();
-        return startFloat + fraction * (endValue.floatValue() - startFloat);
+        return (int) (startFloat + fraction * (endValue.floatValue() - startFloat));
     }
 
 
@@ -286,6 +311,8 @@ public class IndicatorListGroup extends FrameLayout {
             animatorRight.end();
     }
 
+
+
     class IndicatorAdapter extends BaseAdapter {
 
         private ArrayList<String> mList;
@@ -328,10 +355,27 @@ public class IndicatorListGroup extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //mRlMeasuredWidth = rl.getMeasuredWidth();
-        int mIndiMeasuredWidth = indicator.getMeasuredWidth();
-       // mDxWidth=mRlMeasuredWidth-mIndiMeasuredWidth;
-        ObjectAnimator.ofFloat(rl, "translationX", 0, mIndiMeasuredWidth).setDuration(1).start();
+        mRlMeasuredWidth = rl.getMeasuredWidth();
+        mIndiMeasuredWidth = indicator.getMeasuredWidth();
+        mDxWidth=mRlMeasuredWidth-mIndiMeasuredWidth;
+        //ObjectAnimator.ofFloat(rl, "translationX", 0, mIndiMeasuredWidth).setDuration(1).start();
     }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mRlLeft = right - mDxWidth;
+        mRlRight = right + mIndiMeasuredWidth;
+        mRlBottom = bottom;
+        setLayout(0);
+        //loadAnim(mIndiMeasuredWidth);
+    }
+
+    private void setLayout(int touchDx){
+        rl.layout(mRlLeft+touchDx,0, mRlRight+touchDx, mRlBottom);
+
+    }
+
+
 
 }
