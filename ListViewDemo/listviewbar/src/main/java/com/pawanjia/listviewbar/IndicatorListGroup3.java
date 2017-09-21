@@ -1,6 +1,5 @@
 package com.pawanjia.listviewbar;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
@@ -29,7 +28,7 @@ import java.util.List;
  * @data 2017/9/8
  */
 
-public class IndicatorListGroup2 extends FrameLayout {
+public class IndicatorListGroup3 extends FrameLayout {
 
 
 
@@ -43,13 +42,7 @@ public class IndicatorListGroup2 extends FrameLayout {
     private float downX;
     private float downY;
     private float totalDx;
-    private ObjectAnimator animatorIn;
-    private ObjectAnimator animatorOut;
-    private int textAreaWidth;
     private Scroller mScroller;
-    private ObjectAnimator animatorLeft;
-    private ObjectAnimator animatorRight;
-    private boolean isDrawed;
     private int loadAnimationDuration = 500;
     private int scrollDuration = 200;
     private IndicatorAdapter indicatorAdapter;
@@ -61,17 +54,18 @@ public class IndicatorListGroup2 extends FrameLayout {
     private int mRlLeft;
     private int mRlRight;
     private int mRlBottom;
-    private  boolean isFirst;
+    private boolean isClick;
+    private int mRlMeasuredHeight;
 
-    public IndicatorListGroup2(Context context) {
+    public IndicatorListGroup3(Context context) {
         this(context, null);
     }
 
-    public IndicatorListGroup2(Context context, AttributeSet attrs) {
+    public IndicatorListGroup3(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IndicatorListGroup2(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IndicatorListGroup3(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         mLayout = (ViewGroup) layoutInflater.inflate(R.layout.indicator_list_group, this, true);
@@ -81,17 +75,20 @@ public class IndicatorListGroup2 extends FrameLayout {
         frame = (FrameLayout) mLayout.findViewById(R.id.indicator_frame);
         iv = (ImageView) mLayout.findViewById(R.id.indicator_iv);
         mScroller = new Scroller(getContext());
-        isFirst=true;
+        mIsClose = true;
         lv.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL)
+                    isClick=false;//触摸过内容区后由内容区控制导航栏选中
             }
-
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (!isClick) {
                     indicatorSelcPosition = firstVisibleItem;
-                if (indicatorAdapter != null) {
-                    indicatorAdapter.notifyDataSetChanged();
+                    if (indicatorAdapter != null) {
+                        indicatorAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         });
@@ -100,13 +97,12 @@ public class IndicatorListGroup2 extends FrameLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 indicatorSelcPosition=position;
+                isClick=true;
                 indicatorAdapter.notifyDataSetChanged();
                 lv.setSelection(position);
                 closeIndicator();
             }
         });
-        mIsClose = true;
-
         frame.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +114,30 @@ public class IndicatorListGroup2 extends FrameLayout {
             }
         });
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mRlMeasuredWidth = rl.getMeasuredWidth();
+        mRlMeasuredHeight = rl.getMeasuredHeight();
+        mIndiMeasuredWidth = indicator.getMeasuredWidth();
+        mDxWidth=mRlMeasuredWidth-mIndiMeasuredWidth;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mRlLeft = right - mDxWidth;
+        mRlRight = right + mIndiMeasuredWidth;
+        //mRlBottom=bottom;
+        mRlBottom = mRlMeasuredHeight;
+        setLayout((int) totalDx);
+    }
+    //设置位置
+    private void setLayout(int touchDx){
+        rl.layout(mRlLeft+touchDx,0, mRlRight+touchDx, mRlBottom);
+    }
+
 
     //关闭
     private void closeIndicator() {
@@ -260,14 +280,6 @@ public class IndicatorListGroup2 extends FrameLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (animatorOut != null)
-            animatorOut.end();
-        if (animatorIn != null)
-            animatorIn.end();
-        if (animatorLeft != null)
-            animatorLeft.end();
-        if (animatorRight != null)
-            animatorRight.end();
     }
 
 
@@ -311,28 +323,7 @@ public class IndicatorListGroup2 extends FrameLayout {
         }
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mRlMeasuredWidth = rl.getMeasuredWidth();
-        mIndiMeasuredWidth = indicator.getMeasuredWidth();
-        mDxWidth=mRlMeasuredWidth-mIndiMeasuredWidth;
-    }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        mRlLeft = right - mDxWidth;
-        mRlRight = right + mIndiMeasuredWidth;
-        mRlBottom = bottom;
-        setLayout((int) totalDx);
-        WJLog.d("tag","left="+left+"top="+"right="+right+"bottom="+bottom);
-    }
-
-    private void setLayout(int touchDx){
-        rl.layout(mRlLeft+touchDx,0, mRlRight+touchDx, mRlBottom);
-
-    }
 
 
 

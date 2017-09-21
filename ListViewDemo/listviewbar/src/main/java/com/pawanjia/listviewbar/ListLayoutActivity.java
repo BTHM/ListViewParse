@@ -2,10 +2,12 @@ package com.pawanjia.listviewbar;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -69,9 +72,31 @@ public class ListLayoutActivity extends AppCompatActivity {
         mScreenWidth = ToolUtils.getScreenDpi(this);
         indicatorGroup2.setAdapter(new MyAdapter());
         //indicatorGroup2.closeIndector();
+        Rect rectangle= new Rect();
+        Window window= getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        int statusBarHeight= rectangle.top;
+        //int height = getActionBar().getHeight();
+        SystemClock.sleep(100);
+        getSupportActionBar().getHeight();
+        indicatorGroup2.post(new Runnable() {
+            @Override
+            public void run() {
+                int height = getActionBar().getHeight();
+                WJLog.d("tag","height="+height);
+            }
+        });
+        WJLog.d("tag","statusBarHeight="+statusBarHeight);
 
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+//        int height = getActionBar().getHeight();
+//        WJLog.d("tag","height="+height);
+    }
 
     class MyAdapter extends BaseAdapter {
 
