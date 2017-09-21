@@ -1,5 +1,6 @@
 package com.pawanjia.listviewbar;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
@@ -71,8 +72,8 @@ public class IndicatorListGroup extends FrameLayout {
         indicator = (ListView) mLayout.findViewById(R.id.indicator_list);
         frame = (FrameLayout) mLayout.findViewById(R.id.indicator_frame);
         iv = (ImageView) mLayout.findViewById(R.id.indicator_iv);
-        mScroller = new Scroller(getContext());
 
+        mScroller = new Scroller(getContext());
         lv.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -94,6 +95,25 @@ public class IndicatorListGroup extends FrameLayout {
                 isDrawed = true;
                 textAreaWidth = indicator.getWidth();
                 loadAnim(textAreaWidth);
+                closeIndector();
+                ObjectAnimator animatorClose = ObjectAnimator.ofFloat(rl, "translationX", 0, textAreaWidth).setDuration(loadAnimationDuration);
+
+                animatorOut.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        rl.setVisibility(VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                    }
+                });
+                mIsClose=true;
             }
         });
         indicator.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,7 +124,6 @@ public class IndicatorListGroup extends FrameLayout {
                 lv.setSelection(position);
             }
         });
-        mIsClose = false;
         frame.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +169,7 @@ public class IndicatorListGroup extends FrameLayout {
         animatorRight = ObjectAnimator.ofFloat(iv, "rotation", 180, 0);
         animatorRight.setDuration(loadAnimationDuration);
         if (!mIsClose) {//如果绘制完未关闭则关闭
-           // closeIndector();
+            closeIndector();
         }
     }
 
@@ -194,7 +213,6 @@ public class IndicatorListGroup extends FrameLayout {
                 }
                 float percent = totalDx * 1.f / textAreaWidth;
                 rl.setTranslationX(evaluate(percent, 0, textAreaWidth));
-                //rl.setTranslationX(totalDx);
                 downX = moveX;
                 //旋转箭头
                 iv.setRotation(evaluate(percent, 0, 180));
@@ -323,15 +341,6 @@ public class IndicatorListGroup extends FrameLayout {
             textView.setText(mList.get(position));
             return convertView;
         }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //mRlMeasuredWidth = rl.getMeasuredWidth();
-        int mIndiMeasuredWidth = indicator.getMeasuredWidth();
-       // mDxWidth=mRlMeasuredWidth-mIndiMeasuredWidth;
-        ObjectAnimator.ofFloat(rl, "translationX", 0, mIndiMeasuredWidth).setDuration(1).start();
     }
 
 }

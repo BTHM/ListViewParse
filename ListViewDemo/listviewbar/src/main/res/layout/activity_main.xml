@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="支持触摸下上滑动的导航栏"/>
+        android:text="刚进来不显示收缩动画的导航栏"/>
     <Button
         android:id="@+id/btn3"
         android:layout_width="match_parent"
