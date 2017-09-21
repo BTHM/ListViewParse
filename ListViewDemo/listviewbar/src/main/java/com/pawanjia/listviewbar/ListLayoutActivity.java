@@ -62,7 +62,7 @@ public class ListLayoutActivity extends AppCompatActivity {
 //        textArray.add("病因");
 //        textArray.add("临床表现");
 //        textArray.add("检查");
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_layout_list);
         //IndicatorListGroup indicatorGroup2 = (IndicatorListGroup) findViewById(R.id.group6);
         IndicatorListGroup2 indicatorGroup2 = (IndicatorListGroup2) findViewById(R.id.group6);
         indicatorGroup2.setIndicatorText(textArray);

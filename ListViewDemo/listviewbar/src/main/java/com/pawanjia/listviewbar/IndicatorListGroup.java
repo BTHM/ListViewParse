@@ -55,6 +55,8 @@ public class IndicatorListGroup extends FrameLayout {
     private IndicatorAdapter indicatorAdapter;
     private int indicatorSelcPosition;
     private  List<String> textList=new ArrayList<>();
+    private boolean isClick;
+
     public IndicatorListGroup(Context context) {
         this(context, null);
     }
@@ -120,6 +122,7 @@ public class IndicatorListGroup extends FrameLayout {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 indicatorSelcPosition=position;
+                isClick=true;
                 indicatorAdapter.notifyDataSetChanged();
                 lv.setSelection(position);
             }

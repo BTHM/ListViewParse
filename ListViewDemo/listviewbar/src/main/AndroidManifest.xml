@@ -24,6 +24,9 @@
         <activity android:name=".TextActivity">
 
         </activity>
+        <activity android:name=".ListLayoutActivity">
+
+        </activity>
     </application>
 
 </manifest>

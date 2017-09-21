@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:background="@mipmap/slide_bar"
-        android:visibility="invisible">
+        >
 
             <ListView
                 android:id="@+id/indicator_list"
@@ -44,7 +44,7 @@
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:layout_gravity="center"
-                android:src="@mipmap/slide_back"/>
+                android:src="@mipmap/slide_back_left"/>
         </FrameLayout>
     </RelativeLayout>
 </RelativeLayout>

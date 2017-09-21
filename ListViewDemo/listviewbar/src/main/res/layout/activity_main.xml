@@ -26,5 +26,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="支持触摸下上滑动的导航栏"/>
+        android:text="layout设置位置的"/>
 </LinearLayout>
