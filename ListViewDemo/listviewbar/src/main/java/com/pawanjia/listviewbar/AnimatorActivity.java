@@ -26,7 +26,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main2Activity extends AppCompatActivity {
+public class AnimatorActivity extends AppCompatActivity {
     private List<String> datas =new ArrayList<>();
      private List<String> textArray  = new ArrayList();//{"概况", "病因", "临床表现"};//"检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
     private int mScreenWidth;

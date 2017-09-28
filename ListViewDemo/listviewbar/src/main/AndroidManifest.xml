@@ -18,14 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Main2Activity">
-
+        <activity android:name=".AnimatorActivity">
         </activity>
         <activity android:name=".TextActivity">
-
         </activity>
         <activity android:name=".ListLayoutActivity">
-
+        </activity>
+        <activity android:name=".IndicatorGroupActivity">
+        </activity>
+        <activity android:name=".ViewActionActivity">
         </activity>
     </application>
 

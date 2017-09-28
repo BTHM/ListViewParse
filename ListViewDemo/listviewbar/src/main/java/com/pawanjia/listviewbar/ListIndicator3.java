@@ -50,6 +50,22 @@ public class ListIndicator3 extends View {
 
         sectionHeight = ToolUtils.dip2px(context, 48);
         maxPosition = text.length - 1;
+        /*this.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        WJLog.d("ListIndicator3","onTouch..."+"ACTION_DOWN");
+
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        WJLog.d("ListIndicator3","onTouch..."+"ACTION_MOVE");
+                        break;
+                    default:
+                }
+                return false;
+            }
+        });*/
     }
 
     @Override
@@ -98,6 +114,7 @@ public class ListIndicator3 extends View {
                 if (mTouchListner != null) {
                     mTouchListner.onTouch(position);
                 }
+                WJLog.d("ListIndicator3","dispatchTouchEvent..."+"ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_MOVE:
                 float moveY = event.getY();
@@ -115,6 +132,8 @@ public class ListIndicator3 extends View {
                     if (mTouchListner != null) {
                         mTouchListner.onTouch(movePosition);
                     }
+                    WJLog.d("ListIndicator3","dispatchTouchEvent..."+"ACTION_MOVE");
+                    return super.dispatchTouchEvent(event);
                 }
 
                 break;
@@ -123,6 +142,28 @@ public class ListIndicator3 extends View {
             default:
         }
         invalidate();
+        WJLog.d("ListIndicator3","dispatchTouchEvent..."+super.dispatchTouchEvent(event));
+        ///return super.dispatchTouchEvent(event);
+        return true;
+    }
+
+
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                WJLog.d("ListIndicator3","onTouchEvent..."+"ACTION_DOWN");
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                WJLog.d("ListIndicator3","onTouchEvent..."+"ACTION_MOVE");
+                break;
+            default:
+        }
+        WJLog.d("ListIndicator3","onTouchEvent..."+super.onTouchEvent(event));
+        //return super.onTouchEvent(event);
         return true;
     }
 

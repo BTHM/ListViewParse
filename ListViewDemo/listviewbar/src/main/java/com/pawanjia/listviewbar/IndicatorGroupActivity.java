@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -26,14 +25,17 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListLayoutActivity extends AppCompatActivity {
-    private List<String> datas =new ArrayList<>();
-     private List<String> textArray  = new ArrayList();//{"概况", "病因", "临床表现"};//"检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
+public class IndicatorGroupActivity extends AppCompatActivity {
+
+    private List<String> datas=new ArrayList<>();
+    private List<String> textArray=new ArrayList<>();
     private int mScreenWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_indicator_group);
+        IndicatorGroup2 group = (IndicatorGroup2) findViewById(R.id.indicator_group);
         datas.add("0");
         datas.add("1");
         datas.add("2");
@@ -50,35 +52,14 @@ public class ListLayoutActivity extends AppCompatActivity {
         textArray.add("检查");
         textArray.add("概况");
         textArray.add("病因");
-       // textArray.add("临床表现临床表现");
         textArray.add("检查");
         textArray.add("概况");
-       // textArray.add("临床表现临床表现临床表现");
+
         textArray.add("概况");
-//        textArray.add("病因");
-//        textArray.add("临床表现");
-//        textArray.add("检查");
-//        textArray.add("概况");
-//        textArray.add("病因");
-//        textArray.add("临床表现");
-//        textArray.add("检查");
-        setContentView(R.layout.activity_layout_list);
-        //IndicatorListGroup indicatorGroup2 = (IndicatorListGroup) findViewById(R.id.group6);
-        IndicatorListGroup2 indicatorGroup2 = (IndicatorListGroup2) findViewById(R.id.group6);
-        indicatorGroup2.setIndicatorText(textArray);
+
         mScreenWidth = ToolUtils.getScreenDpi(this);
-        indicatorGroup2.setAdapter(new MyAdapter());
-
-
-
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-//        int height = getActionBar().getHeight();
-//        WJLog.d("tag","height="+height);
+        group.setIndicatorText(textArray);
+        group.setAdapter(new MyAdapter());
     }
 
     class MyAdapter extends BaseAdapter {
@@ -120,7 +101,7 @@ public class ListLayoutActivity extends AppCompatActivity {
                 Spanned sp = Html.fromHtml(html3.replace("width","").replace("height",""), new MImageGetter(text,getApplicationContext()), null);
                 text.setText(sp);
             }else if (position == 1){
-                Spanned sp = Html.fromHtml(html2.replace("width","").replace("height",""), new MImageGetter(text,getApplicationContext()), null);
+                Spanned sp = Html.fromHtml(html3.replace("width","").replace("height",""), new MImageGetter(text,getApplicationContext()), null);
                 text.setText(sp);
             }else{
                 webview.loadData(html.replace("width","").replace("height",""),"text/html; charset=UTF-8",null);
@@ -168,11 +149,4 @@ public class ListLayoutActivity extends AppCompatActivity {
             return drawable;
         }
     }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-
-        return super.dispatchTouchEvent(ev);
-    }
 }
-
