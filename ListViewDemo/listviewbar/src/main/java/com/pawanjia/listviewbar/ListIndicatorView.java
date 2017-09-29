@@ -16,7 +16,7 @@ import android.view.View;
  * @data 2017/9/7
  */
 
-public class ListIndicator3 extends View {
+public class ListIndicatorView extends View {
 
     private Paint mPaint;
     private String[] text = {"概况", "病因", "临床表现", "检查", "诊断", "并发症", "治疗", "预后", "预防", "护理"};
@@ -32,15 +32,15 @@ public class ListIndicator3 extends View {
     private float downX;
     private float totaldiffY;
 
-    public ListIndicator3(Context context) {
+    public ListIndicatorView(Context context) {
         this(context, null);
     }
 
-    public ListIndicator3(Context context, @Nullable AttributeSet attrs) {
+    public ListIndicatorView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ListIndicator3(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ListIndicatorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         textSize = ToolUtils.sp2px(getContext(), 14);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -66,7 +66,10 @@ public class ListIndicator3 extends View {
                 return false;
             }
         });*/
+
     }
+
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -143,13 +146,13 @@ public class ListIndicator3 extends View {
         }
         invalidate();
         WJLog.d("ListIndicator3","dispatchTouchEvent..."+super.dispatchTouchEvent(event));
-        ///return super.dispatchTouchEvent(event);
+        //return super.dispatchTouchEvent(event);
         return true;
     }
 
-
-
-
+    public int getMeasuredWidthText() {
+        return measuredWidth;
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()){
@@ -163,8 +166,8 @@ public class ListIndicator3 extends View {
             default:
         }
         WJLog.d("ListIndicator3","onTouchEvent..."+super.onTouchEvent(event));
-        //return super.onTouchEvent(event);
-        return true;
+        return super.onTouchEvent(event);
+        //return true;
     }
 
     public void setSelectedPosition(int position) {

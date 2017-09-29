@@ -25,7 +25,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IndicatorGroupActivity extends AppCompatActivity {
+public class ViewGroupActionActivity extends AppCompatActivity {
 
     private List<String> datas=new ArrayList<>();
     private List<String> textArray=new ArrayList<>();
@@ -34,8 +34,7 @@ public class IndicatorGroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_indicator_group);
-        IndicatorGroup2 group = (IndicatorGroup2) findViewById(R.id.indicator_group);
+        setContentView(R.layout.activity_viewgroup_action);
         datas.add("0");
         datas.add("1");
         datas.add("2");
@@ -58,11 +57,48 @@ public class IndicatorGroupActivity extends AppCompatActivity {
         textArray.add("概况");
 
         mScreenWidth = ToolUtils.getScreenDpi(this);
-        group.setIndicatorText(textArray);
-        group.setAdapter(new MyAdapter());
+        ListIndicatorViewGroup group = (ListIndicatorViewGroup) findViewById(R.id.group);
+        //group.setIndicatorText(textArray);
+        //group.setAdapter(new MyAdapter());
     }
 
-   class MyAdapter extends BaseAdapter {
+
+   /* @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                WJLog.d("ListIndicator3", "activity...dispatchTouchEvent..." + "ACTION_DOWN");
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                WJLog.d("ListIndicator3", "activity...dispatchTouchEvent..." + "ACTION_MOVE");
+                break;
+            default:
+        }
+        WJLog.d("ListIndicator3", "activity...dispatchTouchEvent..." + super.dispatchTouchEvent(ev));
+        return super.dispatchTouchEvent(ev);
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                WJLog.d("ListIndicator3", "activity...onTouchEvent..." + "ACTION_DOWN");
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                WJLog.d("ListIndicator3", "activity...onTouchEvent..." + "ACTION_MOVE");
+                break;
+            default:
+        }
+        WJLog.d("ListIndicator3", "activity...onTouchEvent..." + super.onTouchEvent(event));
+        //return super.onTouchEvent(event);
+        return true;
+    }*/
+
+
+    class MyAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {

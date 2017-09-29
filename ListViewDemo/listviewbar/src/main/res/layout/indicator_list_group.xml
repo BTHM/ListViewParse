@@ -23,7 +23,7 @@
         android:background="@mipmap/slide_bar"
         >
 
-            <ListView
+            <com.pawanjia.listviewbar.ListIndicatorView
                 android:id="@+id/indicator_list"
                 android:layout_width="106dp"
                 android:layout_height="match_parent"

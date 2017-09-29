@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.pawanjia.listviewbar.ViewActionActivity">
-    <com.pawanjia.listviewbar.ListIndicatorView
+    <com.pawanjia.listviewbar.ListIndicatorViewGroup
+        android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
 </android.support.constraint.ConstraintLayout>

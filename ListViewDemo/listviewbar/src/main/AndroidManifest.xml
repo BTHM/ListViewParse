@@ -28,6 +28,8 @@
         </activity>
         <activity android:name=".ViewActionActivity">
         </activity>
+        <activity android:name=".ViewGroupActionActivity"/>
+
     </application>
 
 </manifest>

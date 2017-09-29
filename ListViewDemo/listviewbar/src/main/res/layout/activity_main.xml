@@ -34,4 +34,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="view的事件处理机制"/>
+
+    <Button
+        android:id="@+id/btn5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="viewGroup的事件处理机制"/>
 </LinearLayout>
