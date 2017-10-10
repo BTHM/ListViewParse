@@ -151,14 +151,16 @@ public class ListIndicatorViewGroup extends FrameLayout {
                 float moveX = ev.getX();
                 float moveY = ev.getY();
                 if (Math.abs(moveY - downY) > Math.abs(moveX - downX)) {
-                    return true;
+                    //return true;
                 }
-                break;
+                return true;
+                //break;
             default:
         }
-        //return true;
+
         WJLog.d("ListIndicator3","ListIndicatorGroup...onInterceptTouchEvent..."+super.onInterceptTouchEvent(ev));
-        return super.onInterceptTouchEvent(ev);
+        return true;
+        //return super.onInterceptTouchEvent(ev);
     }
 
     @Override
@@ -194,8 +196,8 @@ public class ListIndicatorViewGroup extends FrameLayout {
                 break;
             default:
         }
-        //return true;
-        return super.onTouchEvent(event);
+         return true;
+        //return super.onTouchEvent(event);
     }
 
 

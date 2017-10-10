@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import static android.view.MotionEvent.ACTION_MOVE;
+
 /**
  * Description
  *
@@ -102,7 +104,7 @@ public class ListIndicatorView extends View {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-
+        WJLog.d("ListIndicator3","dispatchTouchEvent..."+event.getAction());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downY = event.getY();
@@ -117,9 +119,9 @@ public class ListIndicatorView extends View {
                 if (mTouchListner != null) {
                     mTouchListner.onTouch(position);
                 }
-                WJLog.d("ListIndicator3","dispatchTouchEvent..."+"ACTION_DOWN");
+
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case ACTION_MOVE:
                 float moveY = event.getY();
                 float moveX = event.getX();
                 float diffY = moveY - downY;
@@ -135,8 +137,7 @@ public class ListIndicatorView extends View {
                     if (mTouchListner != null) {
                         mTouchListner.onTouch(movePosition);
                     }
-                    WJLog.d("ListIndicator3","dispatchTouchEvent..."+"ACTION_MOVE");
-                    return super.dispatchTouchEvent(event);
+                    return true;
                 }
 
                 break;
@@ -160,7 +161,7 @@ public class ListIndicatorView extends View {
                 WJLog.d("ListIndicator3","onTouchEvent..."+"ACTION_DOWN");
 
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case ACTION_MOVE:
                 WJLog.d("ListIndicator3","onTouchEvent..."+"ACTION_MOVE");
                 break;
             default:

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -63,15 +64,15 @@ public class ViewGroupActionActivity extends AppCompatActivity {
     }
 
 
-   /* @Override
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        WJLog.d("ListIndicator3", "activity...dispatchTouchEvent..." + ev.getAction());
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                WJLog.d("ListIndicator3", "activity...dispatchTouchEvent..." + "ACTION_DOWN");
+
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                WJLog.d("ListIndicator3", "activity...dispatchTouchEvent..." + "ACTION_MOVE");
                 break;
             default:
         }
@@ -82,20 +83,18 @@ public class ViewGroupActionActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        WJLog.d("ListIndicator3", "activity...onTouchEvent..." + event.getAction());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                WJLog.d("ListIndicator3", "activity...onTouchEvent..." + "ACTION_DOWN");
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                WJLog.d("ListIndicator3", "activity...onTouchEvent..." + "ACTION_MOVE");
                 break;
             default:
         }
         WJLog.d("ListIndicator3", "activity...onTouchEvent..." + super.onTouchEvent(event));
-        //return super.onTouchEvent(event);
         return true;
-    }*/
+    }
 
 
     class MyAdapter extends BaseAdapter {
