@@ -193,7 +193,7 @@
             }
 
             // Dispatch to touch targets.
-            // mFirstTouchTarget == null说明点击事件被拦截，或者子view没有消耗事件
+            // mFirstTouchTarget == null说明点击事件被拦截，或者子view没有消耗事件，有这里也可以得到onInterceptTouchEvent方法并不是通过自己将事件拦截下来给自己，只是通过返回值使dispatchTouchEvent()方法不进入查找子view的dispatchTouchEvent()，使事件隔离开了与子view的关系
             if (mFirstTouchTarget == null) {
                 // No touch targets so treat this as an ordinary view.
                 handled = dispatchTransformedTouchEvent(ev, canceled, null,
@@ -265,3 +265,83 @@
 	4.ViewGroup一旦调用onInterceptTouchEvent方法拦截点击事件后，本次点击序列事件则都交于该ViewGroup处理，并且onInterceptTouchEvent将不再执行。原因见【2）继续看29-42行，判断是否父类是否拦截点击事件】中的解释。 
 	
 	5.当dispatchTouchEvent在进行事件分发的时候，只有前一个action返回true，才会触发下一个action.也就是说，子view 未消耗点击事件，及dispatchTouchEvent返回false，这样mFirstTouchTarget =null，后面只能执行172行代码，则后续action直接由ViewGroup执行，不传递给子View
+
+
+
+			
+		private boolean dispatchTransformedTouchEvent(MotionEvent event, boolean cancel,
+            View child, int desiredPointerIdBits) {
+        final boolean handled;
+
+        // Canceling motions is a special case.  We don't need to perform any transformations
+        // or filtering.  The important part is the action, not the contents.
+        final int oldAction = event.getAction();
+        if (cancel || oldAction == MotionEvent.ACTION_CANCEL) {
+            event.setAction(MotionEvent.ACTION_CANCEL);
+			//事件处理vIEW链表底部
+            if (child == null) {
+				//父类view的dispatchTouchEvent(),根据返回值由自己的onTouchEvent来决定
+                handled = super.dispatchTouchEvent(event);
+            } else {
+				//由child的onTouchEvent来决定，如果是viewGroup的话 也能进行循环遍历
+                handled = child.dispatchTouchEvent(event);
+            }
+            event.setAction(oldAction);
+            return handled;
+        }
+
+        // Calculate the number of pointers to deliver.
+        final int oldPointerIdBits = event.getPointerIdBits();
+        final int newPointerIdBits = oldPointerIdBits & desiredPointerIdBits;
+
+        // If for some reason we ended up in an inconsistent state where it looks like we
+        // might produce a motion event with no pointers in it, then drop the event.
+        if (newPointerIdBits == 0) {
+            return false;
+        }
+
+        // If the number of pointers is the same and we don't need to perform any fancy
+        // irreversible transformations, then we can reuse the motion event for this
+        // dispatch as long as we are careful to revert any changes we make.
+        // Otherwise we need to make a copy.
+        final MotionEvent transformedEvent;
+        if (newPointerIdBits == oldPointerIdBits) {
+            if (child == null || child.hasIdentityMatrix()) {
+                if (child == null) {
+			//父类view的dispatchTouchEvent(),根据返回值由自己的onTouchEvent来决定
+                    handled = super.dispatchTouchEvent(event);
+                } else {
+					//按照子控件进行坐标转换，如果是viewGroup的话 也能进行循环遍历
+                    final float offsetX = mScrollX - child.mLeft;
+                    final float offsetY = mScrollY - child.mTop;
+                    event.offsetLocation(offsetX, offsetY);
+
+                    handled = child.dispatchTouchEvent(event);
+
+                    event.offsetLocation(-offsetX, -offsetY);
+                }
+                return handled;
+            }
+            transformedEvent = MotionEvent.obtain(event);
+        } else {
+            transformedEvent = event.split(newPointerIdBits);
+        }
+
+        // Perform any necessary transformations and dispatch.
+        if (child == null) {
+            handled = super.dispatchTouchEvent(transformedEvent);
+        } else {
+            final float offsetX = mScrollX - child.mLeft;
+            final float offsetY = mScrollY - child.mTop;
+            transformedEvent.offsetLocation(offsetX, offsetY);
+            if (! child.hasIdentityMatrix()) {
+                transformedEvent.transform(child.getInverseMatrix());
+            }
+
+            handled = child.dispatchTouchEvent(transformedEvent);
+        }
+
+        // Done.
+        transformedEvent.recycle();
+        return handled;
+    }
