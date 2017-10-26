@@ -41,4 +41,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="viewGroup的事件处理机制"/>
+
+    <Button
+        android:id="@+id/btn7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="video 录制"/>
+
+    <Button
+        android:id="@+id/btn8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="camera自定义"/>
 </LinearLayout>

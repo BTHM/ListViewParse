@@ -6,6 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.pawanjia.listviewbar.camera.CustomCameraActivity;
+import com.pawanjia.listviewbar.camera.VideoActivity;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
@@ -17,6 +20,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn3).setOnClickListener(this);
         findViewById(R.id.btn4).setOnClickListener(this);
         findViewById(R.id.btn5).setOnClickListener(this);
+
+        findViewById(R.id.btn7).setOnClickListener(this);
+        findViewById(R.id.btn8).setOnClickListener(this);
     }
 
     @Override
@@ -37,6 +43,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn5:
                 startActivity(new Intent(this,ViewGroupActionActivity.class));
+                break;
+            case R.id.btn7:
+                startActivity(new Intent(this,VideoActivity.class));
+                break;
+            case R.id.btn8:
+                startActivity(new Intent(this,CustomCameraActivity.class));
                 break;
             default:
         }
